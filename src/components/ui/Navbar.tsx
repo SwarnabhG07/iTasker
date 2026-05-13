@@ -5,7 +5,7 @@ export function Navbar() {
     <nav className="fixed top-0 left-0 z-50 flex w-full items-center justify-between bg-transparent px-8 py-4 text-white">
       
       <div className="text-2xl font-bold tracking-tight">
-        iTasker<span className="text-purple-500">.</span>
+        iTasker<span className="text-purple-800">.</span>
       </div>
 
       <div className="hidden items-center gap-8 md:flex">
