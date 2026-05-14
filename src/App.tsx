@@ -26,6 +26,10 @@ export function App() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState<TodoItem[]>([]);
 
+<<<<<<< HEAD
+=======
+  // NEW: State to track which item is being edited and its temporary value
+>>>>>>> e40779fbdcc3921b75256e2964509ec8c2130062
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
 
