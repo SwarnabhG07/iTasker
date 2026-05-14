@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import bgImage from "./assets/bg.jpeg";
 import { Navbar } from "./components/ui/Navbar";
+import { v4 as uuidv4 } from 'uuid';
 
 "use client"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -16,6 +17,7 @@ import {
 } from "@/components/ui/card"
 
 interface TodoItem {
+  id: string;
   todo: string;
   isCompleted: boolean;
 }
@@ -24,27 +26,41 @@ export function App() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState<TodoItem[]>([]);
 
-  const handleToggleComplete = (index: number) => {
-    const updatedTodos = [...todos];
-    updatedTodos[index].isCompleted = !updatedTodos[index].isCompleted;
-    setTodos(updatedTodos);
-  }
+  const handleToggleComplete = (id: string) => {
+  const index = todos.findIndex(item => item.id === id);  
+  const updatedTodos = [...todos];
+  updatedTodos[index].isCompleted = !updatedTodos[index].isCompleted;
+  
+  setTodos(updatedTodos);
+}
 
   const handleEdit = () => {
 
   }
-  
-  const handleDelete = () => {
 
+  const handleDelete = (e: React.MouseEvent, id: string) => {
+    console.log(`The id is ${id}`)
+
+    let index = todos.findIndex(item => {
+      return item.id === id;
+    })
+
+    console.log(index)
+
+    let newTodos = todos.filter(item => {
+      return item.id !== id
+    });
+
+    setTodos(newTodos)
   }
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTodo(e.target.value)
   }
-  
+
   const handleAdd = () => {
     if (!todo.trim()) return;
-    setTodos([...todos, { todo, isCompleted: false }])
+    setTodos([...todos, { id: uuidv4(), todo, isCompleted: false }])
     setTodo("")
   }
 
@@ -55,7 +71,7 @@ export function App() {
         style={{ backgroundImage: `url(${bgImage})` }}
       >
         <Navbar />
-        
+
         <div className="flex flex-1 w-full justify-center items-start p-4 pt-24">
           <Card className="w-full max-w-2xl flex flex-col max-h-[80vh]">
 
@@ -72,26 +88,32 @@ export function App() {
               [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-700 
               hover:[&::-webkit-scrollbar-thumb]:bg-purple-800"
             >
-              {todos.map((item, index) => {
+              {todos.map((item) => {
                 return (
-                  <div key={index} className="flex justify-between items-center py-2">
-                    
+                  <div key={item.id} className="flex justify-between items-center py-2">
                     <div className="flex items-center gap-4">
-                      <Checkbox 
-                        checked={item.isCompleted} 
-                        onCheckedChange={() => handleToggleComplete(index)} 
-                      /> 
+                      <Checkbox
+                        checked={item.isCompleted}
+                        onCheckedChange={() => handleToggleComplete(item.id)} 
+                      />
                       <div className={`text-lg ${item.isCompleted ? "line-through text-slate-500" : ""}`}>
-                       {item.todo}
+                        {item.todo}
                       </div>
                     </div>
-                    
+
                     <div className="flex gap-2">
-                      <Button onClick={handleEdit} className="bg-purple-700 text-white hover:bg-purple-800">Edit</Button>
-                      <Button onClick={handleDelete} className="bg-purple-700 text-white hover:bg-purple-800">Delete</Button>
+                      <Button onClick={handleEdit} className="bg-purple-700 text-white hover:bg-purple-800">
+                        Edit
+                      </Button>
+                      <Button
+                        onClick={(e) => handleDelete(e, item.id)}
+                        className="bg-purple-700 text-white hover:bg-purple-800"
+                      >
+                        Delete
+                      </Button>
                     </div>
                   </div>
-                 )
+                )
               })}
             </CardContent>
 
