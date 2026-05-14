@@ -4,20 +4,13 @@ import { Input } from "@/components/ui/input";
 import bgImage from "./assets/bg.jpeg";
 import { Navbar } from "./components/ui/Navbar";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverDescription,
-  PopoverHeader,
-  PopoverTitle,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+"use client"
+import { Checkbox } from "@/components/ui/checkbox"
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -30,6 +23,12 @@ interface TodoItem {
 export function App() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState<TodoItem[]>([]);
+
+  const handleToggleComplete = (index: number) => {
+    const updatedTodos = [...todos];
+    updatedTodos[index].isCompleted = !updatedTodos[index].isCompleted;
+    setTodos(updatedTodos);
+  }
 
   const handleEdit = () => {
 
@@ -44,6 +43,7 @@ export function App() {
   }
   
   const handleAdd = () => {
+    if (!todo.trim()) return;
     setTodos([...todos, { todo, isCompleted: false }])
     setTodo("")
   }
@@ -60,13 +60,13 @@ export function App() {
           <Card className="w-full max-w-2xl flex flex-col max-h-[80vh]">
 
             <CardHeader>
-              <CardTitle>TODO LIST</CardTitle>
-              <CardDescription className="flex justify-between items-center">
-                add the todos here
+              <CardTitle className="text-center text-2xl font-bold">TODO LIST</CardTitle>
+              <CardDescription className="text-center">
+                Add the todos here
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="flex flex-col gap-4 flex-1 overflow-y-auto pr-4 mr-1 
+            <CardContent className="flex flex-col gap-4 flex-1 overflow-y-auto pl-10 pr-6 mr-1 
               [&::-webkit-scrollbar]:w-2 
               [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-background 
               [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-700 
@@ -74,16 +74,24 @@ export function App() {
             >
               {todos.map((item, index) => {
                 return (
-                  <div key={index} className="flex justify-between items-center">
-                    <div className={item.isCompleted ? "line-through" : ""}>
-                      {item.todo}
+                  <div key={index} className="flex justify-between items-center py-2">
+                    
+                    <div className="flex items-center gap-4">
+                      <Checkbox 
+                        checked={item.isCompleted} 
+                        onCheckedChange={() => handleToggleComplete(index)} 
+                      /> 
+                      <div className={`text-lg ${item.isCompleted ? "line-through text-slate-500" : ""}`}>
+                       {item.todo}
+                      </div>
                     </div>
+                    
                     <div className="flex gap-2">
                       <Button onClick={handleEdit} className="bg-purple-700 text-white hover:bg-purple-800">Edit</Button>
                       <Button onClick={handleDelete} className="bg-purple-700 text-white hover:bg-purple-800">Delete</Button>
                     </div>
                   </div>
-                )
+                 )
               })}
             </CardContent>
 
