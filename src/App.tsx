@@ -26,16 +26,31 @@ export function App() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState<TodoItem[]>([]);
 
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+
   const handleToggleComplete = (id: string) => {
-  const index = todos.findIndex(item => item.id === id);  
-  const updatedTodos = [...todos];
-  updatedTodos[index].isCompleted = !updatedTodos[index].isCompleted;
-  
-  setTodos(updatedTodos);
-}
+    const index = todos.findIndex(item => item.id === id);
+    const updatedTodos = [...todos];
+    updatedTodos[index].isCompleted = !updatedTodos[index].isCompleted;
+    setTodos(updatedTodos);
+  }
 
-  const handleEdit = () => {
+  const handleEdit = (id: string, currentText: string) => {
+    setEditingId(id);
+    setEditValue(currentText);
+  }
 
+  const handleSaveEdit = (id: string) => {
+    if (!editValue.trim()) return;
+
+    const updatedTodos = todos.map(item =>
+      item.id === id ? { ...item, todo: editValue } : item
+    );
+
+    setTodos(updatedTodos);
+    setEditingId(null); 
+    setEditValue("");  
   }
 
   const handleDelete = (e: React.MouseEvent, id: string) => {
@@ -78,7 +93,7 @@ export function App() {
             <CardHeader>
               <CardTitle className="text-center text-2xl font-bold">TODO LIST</CardTitle>
               <CardDescription className="text-center">
-                Add the todos here
+                Add the Todos here
               </CardDescription>
             </CardHeader>
 
@@ -91,20 +106,48 @@ export function App() {
               {todos.map((item) => {
                 return (
                   <div key={item.id} className="flex justify-between items-center py-2">
-                    <div className="flex items-center gap-4">
+
+                    <div className="flex items-center gap-4 flex-1 mr-4">
                       <Checkbox
                         checked={item.isCompleted}
-                        onCheckedChange={() => handleToggleComplete(item.id)} 
+                        onCheckedChange={() => handleToggleComplete(item.id)}
+                        disabled={editingId === item.id} 
                       />
-                      <div className={`text-lg ${item.isCompleted ? "line-through text-slate-500" : ""}`}>
-                        {item.todo}
-                      </div>
+
+                      {editingId === item.id ? (
+                        <Input
+                          value={editValue}
+                          onChange={(e) => setEditValue(e.target.value)}
+                          autoFocus 
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleSaveEdit(item.id);
+                          }}
+                          className="h-8"
+                        />
+                      ) : (
+                        <div className={`text-lg break-all ${item.isCompleted ? "line-through text-slate-500" : ""}`}>
+                          {item.todo}
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex gap-2">
-                      <Button onClick={handleEdit} className="bg-purple-700 text-white hover:bg-purple-800">
-                        Edit
-                      </Button>
+                      {editingId === item.id ? (
+                        <Button
+                          onClick={() => handleSaveEdit(item.id)}
+                          className="bg-green-600 text-white hover:bg-green-700"
+                        >
+                          Save
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => handleEdit(item.id, item.todo)}
+                          className="bg-purple-700 text-white hover:bg-purple-800"
+                        >
+                          Edit
+                        </Button>
+                      )}
+
                       <Button
                         onClick={(e) => handleDelete(e, item.id)}
                         className="bg-purple-700 text-white hover:bg-purple-800"
@@ -118,7 +161,15 @@ export function App() {
             </CardContent>
 
             <div className="flex justify-center pb-6 pt-4 gap-2 w-full px-6 mt-auto">
-              <Input onChange={handleChange} value={todo} className="w-[60%]" placeholder="E.g., Finalize presentation..."></Input>
+              <Input
+                onChange={handleChange}
+                value={todo}
+                className="w-[60%]"
+                placeholder="E.g., Finalize presentation..."
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleAdd();
+                }}
+              />
               <Button onClick={handleAdd} className="bg-purple-700 text-white hover:bg-purple-800">
                 Add Task
               </Button>
