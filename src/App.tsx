@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import bgImage from "./assets/bg.jpeg";
 import { Navbar } from "./components/ui/Navbar";
@@ -26,18 +26,19 @@ export function App() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState<TodoItem[]>([]);
 
-<<<<<<< HEAD
-=======
-  // NEW: State to track which item is being edited and its temporary value
->>>>>>> e40779fbdcc3921b75256e2964509ec8c2130062
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
+
+  const saveToLS = (newTodos: TodoItem[]) => {
+    localStorage.setItem("todos", JSON.stringify(newTodos))
+  }
 
   const handleToggleComplete = (id: string) => {
     const index = todos.findIndex(item => item.id === id);
     const updatedTodos = [...todos];
     updatedTodos[index].isCompleted = !updatedTodos[index].isCompleted;
     setTodos(updatedTodos);
+    saveToLS(updatedTodos);
   }
 
   const handleEdit = (id: string, currentText: string) => {
@@ -53,8 +54,9 @@ export function App() {
     );
 
     setTodos(updatedTodos);
-    setEditingId(null); 
-    setEditValue("");  
+    setEditingId(null);
+    setEditValue("");
+    saveToLS(updatedTodos); 
   }
 
   const handleDelete = (e: React.MouseEvent, id: string) => {
@@ -63,6 +65,7 @@ export function App() {
     });
 
     setTodos(newTodos)
+    saveToLS(newTodos);
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,9 +74,20 @@ export function App() {
 
   const handleAdd = () => {
     if (!todo.trim()) return;
-    setTodos([...todos, { id: uuidv4(), todo, isCompleted: false }])
+    
+    const newTodos = [...todos, { id: uuidv4(), todo, isCompleted: false }];
+    setTodos(newTodos)
     setTodo("")
+    saveToLS(newTodos); 
   }
+
+  useEffect(() => {
+    const todoString = localStorage.getItem("todos");
+    if (todoString) {
+      let savedTodos = JSON.parse(todoString);
+      setTodos(savedTodos);
+    }
+  }, []);
 
   return (
     <>
@@ -107,14 +121,14 @@ export function App() {
                       <Checkbox
                         checked={item.isCompleted}
                         onCheckedChange={() => handleToggleComplete(item.id)}
-                        disabled={editingId === item.id} 
+                        disabled={editingId === item.id}
                       />
 
                       {editingId === item.id ? (
                         <Input
                           value={editValue}
                           onChange={(e) => setEditValue(e.target.value)}
-                          autoFocus 
+                          autoFocus
                           onKeyDown={(e) => {
                             if (e.key === 'Enter') handleSaveEdit(item.id);
                           }}
