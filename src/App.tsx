@@ -58,14 +58,6 @@ export function App() {
   }
 
   const handleDelete = (e: React.MouseEvent, id: string) => {
-    console.log(`The id is ${id}`)
-
-    let index = todos.findIndex(item => {
-      return item.id === id;
-    })
-
-    console.log(index)
-
     let newTodos = todos.filter(item => {
       return item.id !== id
     });
