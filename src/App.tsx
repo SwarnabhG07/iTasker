@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { Pencil, Trash2, Check } from "lucide-react";
+import { Pencil, Trash2, Check } from "lucide-react"; // <-- Icons imported here
 
 "use client"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -34,8 +34,20 @@ export function App() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
-
+  
   const [showFinished, setShowFinished] = useState(true);
+
+
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formattedTime = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const formattedDate = currentTime.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+
 
   const saveToLS = (newTodos: TodoItem[]) => {
     localStorage.setItem("todos", JSON.stringify(newTodos))
@@ -104,7 +116,7 @@ export function App() {
   return (
     <>
       <div
-        className="flex flex-col min-h-screen w-full items-center bg-cover bg-center bg-no-repeat"
+        className="relative flex flex-col min-h-screen w-full items-center bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${bgImage})` }}
       >
         <Navbar />
@@ -112,14 +124,14 @@ export function App() {
         <div className="flex flex-1 w-full justify-center items-start p-3 pt-20">
           <Card className="w-full max-w-2xl flex flex-col max-h-[85vh]">
 
-            <CardHeader className="relative pt-4 pb-2">
+            <CardHeader className="relative ">
               <div className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
-                <Switch
-                  checked={showFinished}
-                  onCheckedChange={setShowFinished}
-                  id="show-completed"
+                <Switch 
+                  checked={showFinished} 
+                  onCheckedChange={setShowFinished} 
+                  id="show-completed" 
                 />
-                <Label htmlFor="show-completed" className="text-[10px] sm:text-sm ">
+                <Label htmlFor="show-completed" className="text-[10px] sm:text-sm">
                   Show Completed
                 </Label>
               </div>
@@ -129,7 +141,7 @@ export function App() {
                 Add the Todos here
               </CardDescription>
             </CardHeader>
-
+            
             <div className="flex justify-center items-center w-full px-6 pb-2">
               <Field className="w-full max-w-sm flex flex-col gap-2">
                 <FieldLabel htmlFor="progress-upload" className="flex justify-between w-full">
@@ -226,6 +238,16 @@ export function App() {
 
           </Card>
         </div>
+
+        <div className="hidden sm:flex fixed bottom-8 right-8 flex-col items-end bg-black/30 backdrop-blur-md p-3 px-5 rounded-2xl border border-white/10 shadow-xl z-50">
+          <span className="text-2xl font-bold text-white tracking-widest drop-shadow-md">
+            {formattedTime}
+          </span>
+          <span className="text-sm text-slate-300 font-medium">
+            {formattedDate}
+          </span>
+        </div>
+
       </div>
     </>
   )
