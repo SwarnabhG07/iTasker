@@ -4,6 +4,10 @@ import { Input } from "@/components/ui/input";
 import bgImage from "./assets/bg.jpeg";
 import { Navbar } from "./components/ui/Navbar";
 import { v4 as uuidv4 } from 'uuid';
+import * as React from "react"
+import { Progress } from "@/components/ui/progress"
+import { Field, FieldLabel } from "@/components/ui/field"
+
 
 "use client"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -56,7 +60,7 @@ export function App() {
     setTodos(updatedTodos);
     setEditingId(null);
     setEditValue("");
-    saveToLS(updatedTodos); 
+    saveToLS(updatedTodos);
   }
 
   const handleDelete = (e: React.MouseEvent, id: string) => {
@@ -74,11 +78,11 @@ export function App() {
 
   const handleAdd = () => {
     if (!todo.trim()) return;
-    
+
     const newTodos = [...todos, { id: uuidv4(), todo, isCompleted: false }];
     setTodos(newTodos)
     setTodo("")
-    saveToLS(newTodos); 
+    saveToLS(newTodos);
   }
 
   useEffect(() => {
@@ -88,6 +92,10 @@ export function App() {
       setTodos(savedTodos);
     }
   }, []);
+
+  const totalTodos = todos.length;
+  const completedTodos = todos.filter(item => item.isCompleted).length;
+  const progressPercentage = totalTodos === 0 ? 0 : (completedTodos / totalTodos) * 100;
 
   return (
     <>
@@ -102,10 +110,23 @@ export function App() {
 
             <CardHeader>
               <CardTitle className="text-center text-2xl font-bold">TODO LIST</CardTitle>
+
               <CardDescription className="text-center">
                 Add the Todos here
               </CardDescription>
+
+
             </CardHeader>
+            <div className="flex justify-center items-center w-full">
+              <Field className="w-full max-w-sm flex flex-col gap-2">
+                <FieldLabel htmlFor="progress-upload" className="flex justify-between w-full">
+                  <span>Task progress</span>
+                  <span>{completedTodos} / {totalTodos}</span>
+                </FieldLabel>
+                <Progress value={progressPercentage} id="progress-upload" />
+              </Field>
+            </div>
+
 
             <CardContent className="flex flex-col gap-4 flex-1 overflow-y-auto pl-10 pr-6 mr-1 
               [&::-webkit-scrollbar]:w-2 
