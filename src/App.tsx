@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { Pencil, Trash2, Check } from "lucide-react"; 
+import { Pencil, Trash2, Check } from "lucide-react";
 
 "use client"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -21,6 +21,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog"
 
 interface TodoItem {
   id: string;
@@ -34,8 +45,13 @@ export function App() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
-  
+
   const [showFinished, setShowFinished] = useState(true);
+
+  const handleReset = () => {
+    setTodos([]);
+    saveToLS([]);
+  }
 
 
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -125,11 +141,12 @@ export function App() {
           <Card className="w-full max-w-2xl flex flex-col max-h-[85vh]">
 
             <CardHeader className="relative ">
+
               <div className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
-                <Switch 
-                  checked={showFinished} 
-                  onCheckedChange={setShowFinished} 
-                  id="show-completed" 
+                <Switch
+                  checked={showFinished}
+                  onCheckedChange={setShowFinished}
+                  id="show-completed"
                 />
                 <Label htmlFor="show-completed" className="text-[10px] sm:text-sm">
                   Show Completed
@@ -140,8 +157,37 @@ export function App() {
               <CardDescription className="text-center">
                 Add the Todos here
               </CardDescription>
+
+              <div className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="destructive" size="sm" className="h-8 text-xs sm:text-sm">
+                      Reset
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Are you absolutely sure?</DialogTitle>
+                      <DialogDescription>
+                        This action cannot be undone. This will permanently delete your entire todo list.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="gap-2 sm:gap-2 mt-4">
+                      <DialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </DialogClose>
+                      <DialogClose asChild>
+                        <Button variant="destructive" onClick={handleReset}>
+                          Yes, Reset List
+                        </Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+
             </CardHeader>
-            
+
             <div className="flex justify-center items-center w-full px-6 pb-2">
               <Field className="w-full max-w-sm flex flex-col gap-2">
                 <FieldLabel htmlFor="progress-upload" className="flex justify-between w-full">
