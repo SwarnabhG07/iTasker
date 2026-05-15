@@ -7,7 +7,8 @@ import { v4 as uuidv4 } from 'uuid';
 import * as React from "react"
 import { Progress } from "@/components/ui/progress"
 import { Field, FieldLabel } from "@/components/ui/field"
-
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
 
 "use client"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -32,6 +33,8 @@ export function App() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
+  
+  const [showFinished, setShowFinished] = useState(true);
 
   const saveToLS = (newTodos: TodoItem[]) => {
     localStorage.setItem("todos", JSON.stringify(newTodos))
@@ -105,19 +108,28 @@ export function App() {
       >
         <Navbar />
 
-        <div className="flex flex-1 w-full justify-center items-start p-4 pt-24">
-          <Card className="w-full max-w-2xl flex flex-col max-h-[80vh]">
+        <div className="flex flex-1 w-full justify-center items-start p-3 pt-20">
+          <Card className="w-full max-w-2xl flex flex-col max-h-[85vh]">
 
-            <CardHeader>
+            <CardHeader className="relative pb-2">
+              
+              <div className="absolute left-6 top-6 flex items-center space-x-2">
+                <Switch 
+                  checked={showFinished} 
+                  onCheckedChange={setShowFinished} 
+                  id="show-completed" 
+                />
+                <Label htmlFor="show-completed">Show Completed</Label>
+              </div>
+
               <CardTitle className="text-center text-2xl font-bold">TODO LIST</CardTitle>
-
               <CardDescription className="text-center">
                 Add the Todos here
               </CardDescription>
-
-
             </CardHeader>
-            <div className="flex justify-center items-center w-full">
+            
+
+            <div className="flex justify-center items-center w-full px-6 pb-4">
               <Field className="w-full max-w-sm flex flex-col gap-2">
                 <FieldLabel htmlFor="progress-upload" className="flex justify-between w-full">
                   <span>Task progress</span>
@@ -127,7 +139,6 @@ export function App() {
               </Field>
             </div>
 
-
             <CardContent className="flex flex-col gap-4 flex-1 overflow-y-auto pl-10 pr-6 mr-1 
               [&::-webkit-scrollbar]:w-2 
               [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-background 
@@ -135,7 +146,7 @@ export function App() {
               hover:[&::-webkit-scrollbar-thumb]:bg-purple-800"
             >
               {todos.map((item) => {
-                return (
+                return (showFinished || !item.isCompleted) && (
                   <div key={item.id} className="flex justify-between items-center py-2">
 
                     <div className="flex items-center gap-4 flex-1 mr-4">
