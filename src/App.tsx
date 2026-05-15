@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { Pencil, Trash2, Check } from "lucide-react";
 
 "use client"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -33,7 +34,7 @@ export function App() {
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
-  
+
   const [showFinished, setShowFinished] = useState(true);
 
   const saveToLS = (newTodos: TodoItem[]) => {
@@ -111,15 +112,16 @@ export function App() {
         <div className="flex flex-1 w-full justify-center items-start p-3 pt-20">
           <Card className="w-full max-w-2xl flex flex-col max-h-[85vh]">
 
-            <CardHeader className="relative pb-2">
-              
-              <div className="absolute left-6 top-6 flex items-center space-x-2">
-                <Switch 
-                  checked={showFinished} 
-                  onCheckedChange={setShowFinished} 
-                  id="show-completed" 
+            <CardHeader className="relative pt-4 pb-2">
+              <div className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
+                <Switch
+                  checked={showFinished}
+                  onCheckedChange={setShowFinished}
+                  id="show-completed"
                 />
-                <Label htmlFor="show-completed">Show Completed</Label>
+                <Label htmlFor="show-completed" className="text-[10px] sm:text-sm ">
+                  Show Completed
+                </Label>
               </div>
 
               <CardTitle className="text-center text-2xl font-bold">TODO LIST</CardTitle>
@@ -127,9 +129,8 @@ export function App() {
                 Add the Todos here
               </CardDescription>
             </CardHeader>
-            
 
-            <div className="flex justify-center items-center w-full px-6 pb-4">
+            <div className="flex justify-center items-center w-full px-6 pb-2">
               <Field className="w-full max-w-sm flex flex-col gap-2">
                 <FieldLabel htmlFor="progress-upload" className="flex justify-between w-full">
                   <span>Task progress</span>
@@ -139,7 +140,7 @@ export function App() {
               </Field>
             </div>
 
-            <CardContent className="flex flex-col gap-4 flex-1 overflow-y-auto pl-10 pr-6 mr-1 
+            <CardContent className="flex flex-col gap-2 flex-1 overflow-y-auto pl-10 pr-6 mr-1 
               [&::-webkit-scrollbar]:w-2 
               [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-background 
               [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-700 
@@ -147,7 +148,7 @@ export function App() {
             >
               {todos.map((item) => {
                 return (showFinished || !item.isCompleted) && (
-                  <div key={item.id} className="flex justify-between items-center py-2">
+                  <div key={item.id} className="flex justify-between items-center border border-slate-700 rounded-xl py-2 px-3">
 
                     <div className="flex items-center gap-4 flex-1 mr-4">
                       <Checkbox
@@ -176,25 +177,31 @@ export function App() {
                     <div className="flex gap-2">
                       {editingId === item.id ? (
                         <Button
+                          size="icon"
                           onClick={() => handleSaveEdit(item.id)}
-                          className="bg-green-600 text-white hover:bg-green-700"
+                          className="bg-green-600 text-white hover:bg-green-700 h-8 w-8"
+                          title="Save"
                         >
-                          Save
+                          <Check className="h-4 w-4" />
                         </Button>
                       ) : (
                         <Button
+                          size="icon"
                           onClick={() => handleEdit(item.id, item.todo)}
-                          className="bg-purple-700 text-white hover:bg-purple-800"
+                          className="bg-purple-700 text-white hover:bg-purple-800 h-8 w-8"
+                          title="Edit"
                         >
-                          Edit
+                          <Pencil className="h-4 w-4" />
                         </Button>
                       )}
 
                       <Button
+                        size="icon"
                         onClick={(e) => handleDelete(e, item.id)}
-                        className="bg-purple-700 text-white hover:bg-purple-800"
+                        className="bg-purple-700 text-white hover:bg-purple-800 h-8 w-8"
+                        title="Delete"
                       >
-                        Delete
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
@@ -202,7 +209,7 @@ export function App() {
               })}
             </CardContent>
 
-            <div className="flex justify-center pb-6 pt-4 gap-2 w-full px-6 mt-auto">
+            <div className="flex justify-center pb-4 pt-2 gap-2 w-full px-6 mt-auto">
               <Input
                 onChange={handleChange}
                 value={todo}
