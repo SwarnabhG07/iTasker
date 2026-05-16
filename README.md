@@ -8,7 +8,6 @@ A modern, feature-rich task management application built with React, TypeScript,
 - 🎯 **Progress Tracking** - Visual progress bar to track task completion
 - ✔️ **Mark Complete** - Check off tasks as you complete them
 - 🎨 **Modern UI** - Built with shadcn/ui components and TailwindCSS
-- 🌙 **Dark Mode Support** - Toggle between light and dark themes with next-themes
 - 📱 **Responsive Design** - Works seamlessly on desktop and mobile devices
 - ⚡ **Fast Performance** - Vite for blazing-fast development and builds
 - 🧪 **Type Safe** - Full TypeScript support for robust code
@@ -21,7 +20,6 @@ A modern, feature-rich task management application built with React, TypeScript,
 - **UI Components**: [shadcn/ui](https://ui.shadcn.com/)
 - **Styling**: [TailwindCSS 4](https://tailwindcss.com/)
 - **Icons**: [Lucide React](https://lucide.dev/) & [HugeIcons](https://hugeicons.com/)
-- **Theme**: [next-themes](https://github.com/pacocoursey/next-themes)
 - **Utilities**: UUID for unique task IDs, clsx for class merging
 
 ## Prerequisites
