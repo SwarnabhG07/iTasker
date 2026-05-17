@@ -95,7 +95,7 @@ export function App() {
     saveToLS(updatedTodos);
   }
 
-  const handleDelete = (e: React.MouseEvent, id: string) => {
+  const handleDelete = (id: string) => {
     let newTodos = todos.filter(item => {
       return item.id !== id
     });
@@ -255,7 +255,7 @@ export function App() {
 
                       <Button
                         size="icon"
-                        onClick={(e) => handleDelete(e, item.id)}
+                        onClick={() => handleDelete(item.id)}
                         className="bg-purple-700 text-white hover:bg-purple-800 h-8 w-8"
                         title="Delete"
                       >
